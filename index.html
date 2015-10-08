@@ -121,7 +121,7 @@ boundaryMap = {
 	"8hr_NA":{
 		"name":"Ozone Non-attainment Area (8-hr)",
 		"description":"Performs required technical analysis to demonstrate conformity to Ozone requirements.",
-		"color": "#00ff00",
+		"color": "#11bf11",
 		"dash": "3, 6",
 		"btn": "btn-success"
 	},
@@ -144,7 +144,11 @@ boundaryMap = {
 //     <input type="checkbox" autocomplete="off" checked> Checkbox 1 (pre-checked)
 //   </label>
 L.mapbox.accessToken = 'pk.eyJ1IjoiYXRscmVnaW9uYWwiLCJhIjoiQmZ6d2tyMCJ9.oENm3NSf--qHrimdm9Vvdw';
-var map = L.mapbox.map('map', 'atlregional.nlcec3mc', {scrollWheelZoom: false})
+var map = L.mapbox.map('map', 'atlregional.nlcec3mc', 
+{
+	scrollWheelZoom: false,
+	maxBounds: [[34.93548199355903, -80.67260742187499], [32.61161640317033, -87.42370605468749]]
+})
     .setView([33.81908916394128, -84.04403686523438], 9);
 
 L.control.fullscreen().addTo(map);
