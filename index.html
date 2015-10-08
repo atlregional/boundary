@@ -29,6 +29,9 @@
 	    width: inherit;
 	    display: inline-block;
 	}
+	.boundary-checkbox{
+		min-width: 320px;
+	}
 </style>
 </head>
 <body>
@@ -48,7 +51,7 @@
 			<!-- <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> -->
 		</button>
 	</h4>
-	<div id="boundarySelect" role="group" class="btn-group-vertical" data-toggle="buttons">
+	<div id="boundarySelect" class="text-left" style="width:330px" >
 		<!-- <option>View all</option> -->
 		<!-- <option value="RDC_AAA">Regional Development Center</option>
 		<option value="8hr_NA">EPA eight-hour air quality non-attainment area</option>
@@ -93,26 +96,30 @@
 boundaryMap = {
 	"RDC_AAA":{
 		"name":"Regional Development Center",
-		"description":"this does this",
+		"description":"Facilitates intergovernmental coordination and provide comprehensive planning assistance and other services to constituent jurisdictions.",
 		"color": "blue",
+		"dash": "3, 6",
 		"btn": "btn-primary"
 	},
 	"8hr_NA":{
-		"name":"EPA eight-hour air quality non-attainment area",
-		"description":"this does this",
+		"name":"EPA 8-hr Air Quality Non-attainment Area",
+		"description":"Performs required technical analysis to demonstrate conformity to Ozone requirements.",
 		"color": "green",
+		"dash": "3, 6",
 		"btn": "btn-success"
 	},
 	"MPO Area Actual":{
 		"name":"Metropolitan Planning Organization",
-		"description":"this does this",
+		"description":"Responsible for carrying out the federally required metropolitan transportation planning process.",
 		"color": "orange",
+		"dash": 6,
 		"btn": "btn-warning"
 	},
 	"Particulate Matter":{
-		"name":"EPA Particulate Matter non-attainment area",
-		"description":"this does this",
+		"name":"EPA Particulate Matter Non-attainment Area",
+		"description":"Performs required technical analysis to demonstrate conformity to PM requirements.",
 		"color": "red",
+		"dash": 0,
 		"btn": "btn-danger"
 	},
 };
@@ -121,7 +128,7 @@ boundaryMap = {
 //   </label>
 L.mapbox.accessToken = 'pk.eyJ1IjoiYXRscmVnaW9uYWwiLCJhIjoiQmZ6d2tyMCJ9.oENm3NSf--qHrimdm9Vvdw';
 var map = L.mapbox.map('map', 'atlregional.nlcec3mc', {scrollWheelZoom: false})
-    .setView([33.81908916394128, -84.40521240234375], 9);
+    .setView([33.81908916394128, -84.04403686523438], 9);
 
 L.control.fullscreen().addTo(map);
 var geojson;
@@ -131,10 +138,11 @@ var defaultStrokeOpacity = 1;
 var defaultFillOpacity = 0.7;
 
 $.each(boundaryMap, function(key, value){
-	$('#boundarySelect').append('<label class=" text-left btn ' + 
+	$('#boundarySelect').append('<label class="boundary-checkbox btn ' + 
 								value.btn + 
 								' active">' +
-								'<input class="text-left" type="checkbox" autocomplete="off" checked value="' + key + '">' + value.name + // ' <button class="btn btn-xs"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button>' +
+								'<input class=" pull-left" type="checkbox" autocomplete="off" checked value="' + key + '"> ' + 
+								'<span class="pull-left" style="padding:0 0 0 4px"> ' + value.name + '</span>' + // ' <button class="btn btn-xs"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button>' +
 								'</label>'
 	);
 	$('#boundaryList').append('<li><strong>' + value.name + '</strong> - ' + value.description + '</li>' )
@@ -194,11 +202,11 @@ function style(feature){
         opacity: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? defaultStrokeOpacity : 0,
         fillOpacity: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? defaultFillOpacity : 0,
         color: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? boundaryMap[feature.properties.REGION].color : '#fff',
-        dashArray: '3',
+        dashArray: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? boundaryMap[feature.properties.REGION].dash : 3,
     };
 }
 function onEachFeature(feature, layer){
-	var popupContent = typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? '<h4>' + boundaryMap[feature.properties.REGION].name + '</h4>' : '';
+	var popupContent = typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? '<h4>' + boundaryMap[feature.properties.REGION].name + '</h4><p>'  + boundaryMap[feature.properties.REGION].description + '</p>' : '' ;
 	if (feature.properties) {
 		layer.bindPopup(popupContent);
 	}
