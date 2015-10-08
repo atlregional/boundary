@@ -14,6 +14,7 @@
 <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet' />
 <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-label/v0.2.1/leaflet.label.js'></script>
 <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-label/v0.2.1/leaflet.label.css' rel='stylesheet' />
+<link href='https://fonts.googleapis.com/css?family=PT+Serif:700' rel='stylesheet' type='text/css'>
 <style>
 	body { margin:0; padding:0; }
 	#map { position:absolute; top:0; bottom:0; width:100%; }
@@ -42,6 +43,14 @@
 		background: rgba(0,0,0,0);
 		border: none;
 		padding: 0px;
+		font-family: 'PT Serif', serif;
+		font-size: large;
+		text-shadow:
+		     -1px -1px 0 #fff,  
+		      1px -1px 0 #fff,
+		      -1px 1px 0 #fff,
+		       1px 1px 0 #fff;
+		z-index: -1000;
 	}
 	.leaflet-label:before{
 		border: none;
@@ -105,28 +114,28 @@ boundaryMap = {
 	"RDC_AAA":{
 		"name":"Regional Commission",
 		"description":"Facilitates intergovernmental coordination and provide comprehensive planning assistance and other services to constituent jurisdictions.",
-		"color": "blue",
+		"color": "#0000ff",
 		"dash": "3, 6",
 		"btn": "btn-primary"
 	},
 	"8hr_NA":{
 		"name":"Ozone Non-attainment Area (8-hr)",
 		"description":"Performs required technical analysis to demonstrate conformity to Ozone requirements.",
-		"color": "green",
+		"color": "#00ff00",
 		"dash": "3, 6",
 		"btn": "btn-success"
 	},
 	"MPO Area Actual":{
 		"name":"Metropolitan Planning Organization",
 		"description":"Responsible for carrying out the federally required metropolitan transportation planning process.",
-		"color": "orange",
+		"color": "#ff9a00",
 		"dash": 6,
 		"btn": "btn-warning"
 	},
 	"Particulate Matter":{
 		"name":"Particulate Matter Non-attainment Area",
 		"description":"Performs required technical analysis to demonstrate conformity to PM requirements.",
-		"color": "red",
+		"color": "#f00000",
 		"dash": 0,
 		"btn": "btn-danger"
 	},
@@ -145,7 +154,9 @@ var counties;
 var slice;
 var labels = [];
 var defaultStrokeOpacity = 1;
-var defaultFillOpacity = 0.7;
+var boundaryWeight = 0;
+var countyWeight = 2;
+var defaultFillOpacity = 0.5;
 
 $.each(boundaryMap, function(key, value){
 	$('#boundarySelect').append('<label class="boundary-checkbox btn ' + 
@@ -238,7 +249,7 @@ $.getJSON('http://arc.garc.opendata.arcgis.com/datasets/53ca7db14b8f4a9193c18832
 					opacity: 1,
 					color: 'black',
 					fillOpacity: 0,
-					weight: 3,
+					weight: countyWeight,
 					dashArray: "5,2,3,7"
 				},
 		    	onEachFeature: onEachCounty
@@ -251,7 +262,7 @@ $.getJSON('http://arc.garc.opendata.arcgis.com/datasets/53ca7db14b8f4a9193c18832
 function style(feature){
 	return {
         fillColor: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? boundaryMap[feature.properties.REGION].color : '#fff',
-        weight: 2,
+        weight: boundaryWeight,
         opacity: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? defaultStrokeOpacity : 0,
         fillOpacity: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? defaultFillOpacity : 0,
         color: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? boundaryMap[feature.properties.REGION].color : '#fff',
@@ -271,9 +282,10 @@ function orderLayers(){
 	layers[0].bringToFront();
 }
 function onEachCounty(feature, layer){
+	var xOffset = -feature.properties.NAME10.length * feature.properties.NAME10.length / 2
 	var label = new L.Label({
 		className:'county-label',
-		offset:[-12,-5]
+		offset:[xOffset,-5]
 	})
 	label.setContent(feature.properties.NAME10)
 	label.setLatLng(layer.getBounds().getCenter())
