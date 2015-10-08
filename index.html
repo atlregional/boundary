@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Leaflet Fullscreen</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.css' rel='stylesheet' />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css"/>
+<!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"> -->
+<style>
+	body { margin:0; padding:0; }
+	#map { position:absolute; top:0; bottom:0; width:100%; }
+	#panel {
+		/*opacity:.6;*/
+		margin: 6px 8px;
+		padding: 6px 8px;
+		position: fixed;
+		right:0px;
+		background-color:white;
+		z-index: 1000;
+		box-shadow: 0 0 15px rgba(0,0,0,0.2);
+	    border-radius: 5px;
+
+	}
+	.switches {
+		margin-top:15px;
+	    text-align: center;
+	    width: inherit;
+	    display: inline-block;
+	}
+</style>
+</head>
+<body>
+
+
+<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/Leaflet.fullscreen.min.js'></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet' />
+<div id="panel" class="pull-right">
+	<div class="form-group">
+		
+	<h4>
+		Click to turn on/off boundaries 
+		<button class="btn btn-default btn-xs" data-toggle="modal" data-target="#aboutModal">
+			Help
+			<!-- <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> -->
+		</button>
+	</h4>
+	<div id="boundarySelect" role="group" class="btn-group-vertical" data-toggle="buttons">
+		<!-- <option>View all</option> -->
+		<!-- <option value="RDC_AAA">Regional Development Center</option>
+		<option value="8hr_NA">EPA eight-hour air quality non-attainment area</option>
+		<option value="MPO">Metropolitan Planning Organization</option>
+		<option value="RDC_AAA">EPA Particulate Matter non-attainment area</option> -->
+	</div>
+	</div>
+	<!-- <div class="text-center">
+		<div class="switches btn-group" data-toggle="buttons">
+			<label checked type="button" id="transpo" class=" layer-switch btn active btn-default" title="Transportation Emissions">
+			<input type="radio" checked><i class="fa fa-car"></i></label>
+			<label type="button" id="res" class=" layer-switch btn  btn-default" title="Residential Emissions">
+			<input type="radio"><i class="fa fa-building"></i></label>
+			<label type="button" id="total" class=" layer-switch btn  btn-default" title="Total Emissions">
+			<input type="radio"><i class="fa fa-car"></i> + <i class="fa fa-building"></i></label>
+			
+		</div>
+		<h3 id="message"></h3>
+	</div> -->
+</div>
+<div id='map'></div>
+<div id="aboutModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title">ARC Boundary Map</h4>
+      </div>
+      <div class="modal-body">
+      	This map shows the various boundaries within which the Atlanta Regional Commission operates.
+      	<ul id="boundaryList">
+      		
+      	</ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<script>
+boundaryMap = {
+	"RDC_AAA":{
+		"name":"Regional Development Center",
+		"description":"this does this",
+		"color": "blue",
+		"btn": "btn-primary"
+	},
+	"8hr_NA":{
+		"name":"EPA eight-hour air quality non-attainment area",
+		"description":"this does this",
+		"color": "green",
+		"btn": "btn-success"
+	},
+	"MPO Area Actual":{
+		"name":"Metropolitan Planning Organization",
+		"description":"this does this",
+		"color": "orange",
+		"btn": "btn-warning"
+	},
+	"Particulate Matter":{
+		"name":"EPA Particulate Matter non-attainment area",
+		"description":"this does this",
+		"color": "red",
+		"btn": "btn-danger"
+	},
+};
+// <label class="btn btn-primary active">
+//     <input type="checkbox" autocomplete="off" checked> Checkbox 1 (pre-checked)
+//   </label>
+L.mapbox.accessToken = 'pk.eyJ1IjoiYXRscmVnaW9uYWwiLCJhIjoiQmZ6d2tyMCJ9.oENm3NSf--qHrimdm9Vvdw';
+var map = L.mapbox.map('map', 'atlregional.nlcec3mc', {scrollWheelZoom: false})
+    .setView([33.81908916394128, -84.40521240234375], 9);
+
+L.control.fullscreen().addTo(map);
+var geojson;
+var geojsonData;
+var slice;
+var defaultStrokeOpacity = 1;
+var defaultFillOpacity = 0.7;
+
+$.each(boundaryMap, function(key, value){
+	$('#boundarySelect').append('<label class=" text-left btn ' + 
+								value.btn + 
+								' active">' +
+								'<input class="text-left" type="checkbox" autocomplete="off" checked value="' + key + '">' + value.name + // ' <button class="btn btn-xs"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button>' +
+								'</label>'
+	);
+	$('#boundaryList').append('<li><strong>' + value.name + '</strong> - ' + value.description + '</li>' )
+});
+
+$('label > input[type=checkbox]').on('change', function () {
+	// console.log();
+	var checked = $(this).is(':checked');
+	console.log(this.value);
+	// console.log(geojson.getLayers());
+	var layers = geojson.getLayers();
+	if (checked){
+		for (var i = 0; i < layers.length; i++) {
+			if (layers[i].feature.properties.REGION === this.value){
+				layers[i].setStyle({opacity:defaultStrokeOpacity,fillOpacity:defaultFillOpacity});
+			}
+		};
+	}
+	else {
+		for (var i = 0; i < layers.length; i++) {
+			if (layers[i].feature.properties.REGION === this.value){
+				layers[i].setStyle({opacity:0,fillOpacity:0});
+			}
+		};
+	}
+});
+
+
+$.getJSON('http://arc.garc.opendata.arcgis.com/datasets/00291eb4d3e34cb8bc642919a91a9e72_99.geojson', function(data){
+	geojsonData = data;
+	$.each(data.features, function(i, feature){
+		console.log(feature);
+		if (typeof feature === 'undefined' || typeof boundaryMap[feature.properties.REGION] === 'undefined'){
+			geojsonData.features.splice(i, 1);
+			data.features.splice(i, 1);
+		}
+		if (i === data.features.length){
+			geojson = L.geoJson(data, { 
+				style: style,
+		    	onEachFeature: onEachFeature
+		    }).addTo(map);
+		    var layers = geojson.getLayers()
+		    layers[1].bringToFront()
+		    layers[4].bringToFront()
+		    layers[0].bringToFront()
+		}
+	})
+	
+	
+}
+);
+
+function style(feature){
+	return {
+        fillColor: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? boundaryMap[feature.properties.REGION].color : '#fff',
+        weight: 2,
+        opacity: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? defaultStrokeOpacity : 0,
+        fillOpacity: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? defaultFillOpacity : 0,
+        color: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? boundaryMap[feature.properties.REGION].color : '#fff',
+        dashArray: '3',
+    };
+}
+function onEachFeature(feature, layer){
+	var popupContent = typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? '<h4>' + boundaryMap[feature.properties.REGION].name + '</h4>' : '';
+	if (feature.properties) {
+		layer.bindPopup(popupContent);
+	}
+}
+
+</script>
+
+
+</body>
+</html>
