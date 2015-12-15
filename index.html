@@ -224,6 +224,7 @@ $.getJSON('http://arc.garc.opendata.arcgis.com/datasets/00291eb4d3e34cb8bc642919
 		if (typeof feature === 'undefined' || typeof boundaryMap[feature.properties.REGION] === 'undefined'){
 			geojsonData.features.splice(i, 1);
 			data.features.splice(i, 1);
+			// return true;
 		}
 		if (i === data.features.length){
 			geojson = L.geoJson(data, { 
@@ -275,7 +276,7 @@ function style(feature){
 }
 function onEachFeature(feature, layer){
 	var popupContent = typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? '<h4>' + boundaryMap[feature.properties.REGION].name + '</h4><p>'  + boundaryMap[feature.properties.REGION].description + '</p>' : '' ;
-	if (feature.properties) {
+	if (typeof boundaryMap[feature.properties.REGION] !== 'undefined') {
 		layer.bindPopup(popupContent);
 	}
 }
