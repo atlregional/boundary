@@ -93,12 +93,19 @@
 	</div>
 <script>
 	boundaryMap = {
+		"MPO Area Actual":{
+			"name":"Metropolitan Planning Organization",
+			"description":"Responsible for carrying out the federally required metropolitan transportation planning process.",
+			"color": "#0000ff",
+			"dash": 6,
+			"btn": "btn-primary"
+		},
 		"RDC_AAA":{
 			"name":"Regional Commission",
 			"description":"Facilitates intergovernmental coordination and provide comprehensive planning assistance and other services to constituent jurisdictions.",
-			"color": "#0000ff",
+			"color": "#ff9a00",
 			"dash": "3, 6",
-			"btn": "btn-primary"
+			"btn": "btn-warning"
 		},
 		"8hr_NA":{
 			"name":"Ozone Non-attainment Area (8-hr)",
@@ -107,13 +114,7 @@
 			"dash": "3, 6",
 			"btn": "btn-success"
 		},
-		"MPO Area Actual":{
-			"name":"Metropolitan Planning Organization",
-			"description":"Responsible for carrying out the federally required metropolitan transportation planning process.",
-			"color": "#ff9a00",
-			"dash": 6,
-			"btn": "btn-warning"
-		},
+		
 		"Particulate Matter":{
 			"name":"Particulate Matter Non-attainment Area",
 			"description":"Performs required technical analysis to demonstrate conformity to PM requirements.",
@@ -253,9 +254,9 @@
 	}
 	function orderLayers(){
 		var layers = geojson.getLayers();
-		layers[1].bringToFront();
-		layers[3].bringToFront();
-		layers[0].bringToFront();
+		layers[1].bringToFront(); // bring ozone to front
+		layers[0].bringToFront(); // bring rc to front
+		layers[3].bringToFront(); // bring mpo to front
 	}
 	function onEachCounty(feature, layer){
 		var xOffset = -feature.properties.NAME10.length * feature.properties.NAME10.length / 2
