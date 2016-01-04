@@ -1,305 +1,274 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset=utf-8 />
-<title>ARC Planning Areas</title>
-<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-<script src='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.js'></script>
-<link href='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.css' rel='stylesheet' />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css"/>
-<!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"> -->
-<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/Leaflet.fullscreen.min.js'></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet' />
-<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-label/v0.2.1/leaflet.label.js'></script>
-<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-label/v0.2.1/leaflet.label.css' rel='stylesheet' />
-<link href='https://fonts.googleapis.com/css?family=PT+Serif:700' rel='stylesheet' type='text/css'>
-<style>
-	body { margin:0; padding:0; }
-	#map { position:absolute; top:0; bottom:0; width:100%; }
-	#panel {
-		/*opacity:.6;*/
-		margin: 6px 8px;
-		padding: 6px 8px;
-		position: fixed;
-		right:0px;
-		background-color:white;
-		z-index: 1000;
-		box-shadow: 0 0 15px rgba(0,0,0,0.2);
-	    border-radius: 5px;
+	<meta charset=utf-8 />
+	<title>ARC Planning Areas</title>
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+	<script src='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.js'></script>
+	<link href='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.css' rel='stylesheet' />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css"/>
+	<!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"> -->
+	<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/Leaflet.fullscreen.min.js'></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/leaflet.fullscreen.css' rel='stylesheet' />
+	<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-label/v0.2.1/leaflet.label.js'></script>
+	<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-label/v0.2.1/leaflet.label.css' rel='stylesheet' />
+	<link href='https://fonts.googleapis.com/css?family=PT+Serif:700' rel='stylesheet' type='text/css'>
+	<style>
+		body { margin:0; padding:0; }
+		#map { position:absolute; top:0; bottom:0; width:100%; }
+		#panel {
+			/*opacity:.6;*/
+			margin: 6px 8px;
+			padding: 6px 8px;
+			position: fixed;
+			right:0px;
+			background-color:white;
+			z-index: 1000;
+			box-shadow: 0 0 15px rgba(0,0,0,0.2);
+		    border-radius: 5px;
 
-	}
-	.switches {
-		margin-top:15px;
-	    text-align: center;
-	    width: inherit;
-	    display: inline-block;
-	}
-	.boundary-checkbox{
-		min-width: 320px;
-	}
-	.county-label{
-		background: rgba(0,0,0,0);
-		border: none;
-		padding: 0px;
-		font-family: 'PT Serif', serif;
-		font-size: large;
-		text-shadow:
-		     -1px -1px 0 #fff,  
-		      1px -1px 0 #fff,
-		      -1px 1px 0 #fff,
-		       1px 1px 0 #fff;
-		z-index: -1000;
-	}
-	.leaflet-label:before{
-		border: none;
-	}
-</style>
+		}
+		.switches {
+			margin-top:15px;
+		    text-align: center;
+		    width: inherit;
+		    display: inline-block;
+		}
+		.boundary-checkbox{
+			min-width: 320px;
+		}
+		.county-label{
+			background: rgba(0,0,0,0);
+			border: none;
+			padding: 0px;
+			font-family: 'PT Serif', serif;
+			font-size: large;
+			text-shadow:
+			     -1px -1px 0 #fff,  
+			      1px -1px 0 #fff,
+			      -1px 1px 0 #fff,
+			       1px 1px 0 #fff;
+			z-index: -1000;
+		}
+		.leaflet-label:before{
+			border: none;
+		}
+	</style>
 </head>
 <body>
-<div id="panel" class="pull-right">
-	<div class="form-group">
-		
-	<h4>
-		ARC Planning Areas 
-		<button class="btn btn-default btn-xs" data-toggle="modal" data-target="#aboutModal">
-			Help
-			<!-- <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> -->
-		</button>
-	</h4>
-	<div id="boundarySelect" class="text-left" style="width:330px" >
-		<!-- <option>View all</option> -->
-		<!-- <option value="RDC_AAA">Regional Development Center</option>
-		<option value="8hr_NA">EPA eight-hour air quality non-attainment area</option>
-		<option value="MPO">Metropolitan Planning Organization</option>
-		<option value="RDC_AAA">EPA Particulate Matter non-attainment area</option> -->
-	</div>
-	</div>
-	<!-- <div class="text-center">
-		<div class="switches btn-group" data-toggle="buttons">
-			<label checked type="button" id="transpo" class=" layer-switch btn active btn-default" title="Transportation Emissions">
-			<input type="radio" checked><i class="fa fa-car"></i></label>
-			<label type="button" id="res" class=" layer-switch btn  btn-default" title="Residential Emissions">
-			<input type="radio"><i class="fa fa-building"></i></label>
-			<label type="button" id="total" class=" layer-switch btn  btn-default" title="Total Emissions">
-			<input type="radio"><i class="fa fa-car"></i> + <i class="fa fa-building"></i></label>
+	<div id="panel" class="pull-right">
+		<div class="form-group">
 			
+		<h4>
+			ARC Planning Areas 
+			<button class="btn btn-default btn-xs" data-toggle="modal" data-target="#aboutModal">
+				Help
+			</button>
+		</h4>
+		<div id="boundarySelect" class="text-left" style="width:330px" >
 		</div>
-		<h3 id="message"></h3>
-	</div> -->
-</div>
-<div id='map'></div>
-<div id="aboutModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-        <h4 class="modal-title">ARC Planning Areas</h4>
-      </div>
-      <div class="modal-body">
-      	This map shows the various boundaries within which the Atlanta Regional Commission operates.
-      	<ul id="boundaryList">
-      		
-      	</ul>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div>
+		</div>
+	</div>
+	<div id='map'></div>
+	<div id="aboutModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+	        <h4 class="modal-title">ARC Planning Areas</h4>
+	      </div>
+	      <div class="modal-body">
+	      	This map shows the various boundaries within which the Atlanta Regional Commission operates.
+	      	<ul id="boundaryList">
+	      		
+	      	</ul>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div>
 <script>
-boundaryMap = {
-	"RDC_AAA":{
-		"name":"Regional Commission",
-		"description":"Facilitates intergovernmental coordination and provide comprehensive planning assistance and other services to constituent jurisdictions.",
-		"color": "#0000ff",
-		"dash": "3, 6",
-		"btn": "btn-primary"
-	},
-	"8hr_NA":{
-		"name":"Ozone Non-attainment Area (8-hr)",
-		"description":"Performs required technical analysis to demonstrate conformity to Ozone requirements.",
-		"color": "#11bf11",
-		"dash": "3, 6",
-		"btn": "btn-success"
-	},
-	"MPO Area Actual":{
-		"name":"Metropolitan Planning Organization",
-		"description":"Responsible for carrying out the federally required metropolitan transportation planning process.",
-		"color": "#ff9a00",
-		"dash": 6,
-		"btn": "btn-warning"
-	},
-	"Particulate Matter":{
-		"name":"Particulate Matter Non-attainment Area",
-		"description":"Performs required technical analysis to demonstrate conformity to PM requirements.",
-		"color": "#f00000",
-		"dash": 0,
-		"btn": "btn-danger"
-	},
-};
-// <label class="btn btn-primary active">
-//     <input type="checkbox" autocomplete="off" checked> Checkbox 1 (pre-checked)
-//   </label>
-L.mapbox.accessToken = 'pk.eyJ1IjoiYXRscmVnaW9uYWwiLCJhIjoiQmZ6d2tyMCJ9.oENm3NSf--qHrimdm9Vvdw';
-var map = L.mapbox.map('map', 'atlregional.nlcec3mc', 
-{
-	scrollWheelZoom: false,
-	maxBounds: [[34.93548199355903, -80.67260742187499], [32.61161640317033, -87.42370605468749]]
-})
-    .setView([33.81908916394128, -84.04403686523438], 9);
-
-L.control.fullscreen().addTo(map);
-var geojson;
-var geojsonData;
-var counties;
-var slice;
-var labels = [];
-var defaultStrokeOpacity = 1;
-var boundaryWeight = 0;
-var countyWeight = 2;
-var defaultFillOpacity = 0.5;
-
-$.each(boundaryMap, function(key, value){
-	$('#boundarySelect').append('<label class="boundary-checkbox btn ' + 
-								value.btn + 
-								' active">' +
-								'<input class=" pull-left" type="checkbox" autocomplete="off" checked value="' + key + '"> ' + 
-								'<span class="pull-left" style="padding:0 0 0 4px"> ' + value.name + '</span>' + // ' <button class="btn btn-xs"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button>' +
-								'</label>'
-	);
-	$('#boundaryList').append('<li><strong>' + value.name + '</strong> - ' + value.description + '</li>' )
-});
-$('#boundarySelect').append('<label class="boundary-checkbox btn btn-default"><input class=" pull-left" type="checkbox" autocomplete="off" checked value="counties"><span class="pull-left" style="padding:0 0 0 4px"> Counties</span></label>')
-
-$('label > input[type=checkbox]').on('change', function () {
-	// console.log();
-	var checked = $(this).is(':checked');
-	console.log(this.value);
-	// console.log(geojson.getLayers());
-	var layers = geojson.getLayers();
-	if (checked){
-		for (var i = 0; i < layers.length; i++) {
-			if (layers[i].feature.properties.REGION === this.value){
-				// layers[i].setStyle({opacity:defaultStrokeOpacity,fillOpacity:defaultFillOpacity});
-				map.addLayer(layers[i]);
-				orderLayers();
-			}
-
-		};
-	}
-	else {
-		for (var i = 0; i < layers.length; i++) {
-			if (layers[i].feature.properties.REGION === this.value){
-				// layers[i].setStyle({opacity:0,fillOpacity:0});
-				map.removeLayer(layers[i]);
-			}
-		};
-	}
-	if (this.value === 'counties'){
-		if (checked){
-			map.addLayer(counties);
-			counties.bringToBack();
-			for (var i = 0; i < labels.length; i++) {
-				map.addLayer(labels[i])
-			};
-		}
-		else{
-			map.removeLayer(counties);	
-			for (var i = 0; i < labels.length; i++) {
-				map.removeLayer(labels[i])
-			};
-		}
-	}
-
-});
-
-// Get Planning Areas
-$.getJSON('http://arc.garc.opendata.arcgis.com/datasets/00291eb4d3e34cb8bc642919a91a9e72_99.geojson', function(data){
-	geojsonData = data;
-	$.each(data.features, function(i, feature){
-		console.log(feature);
-		if (typeof feature === 'undefined' || typeof boundaryMap[feature.properties.REGION] === 'undefined'){
-			geojsonData.features.splice(i, 1);
-			data.features.splice(i, 1);
-			// return true;
-		}
-		if (i === data.features.length){
-			geojson = L.geoJson(data, { 
-				style: style,
-		    	onEachFeature: onEachFeature
-		    }).addTo(map);
-		    orderLayers();
-		}
+	boundaryMap = {
+		"RDC_AAA":{
+			"name":"Regional Commission",
+			"description":"Facilitates intergovernmental coordination and provide comprehensive planning assistance and other services to constituent jurisdictions.",
+			"color": "#0000ff",
+			"dash": "3, 6",
+			"btn": "btn-primary"
+		},
+		"8hr_NA":{
+			"name":"Ozone Non-attainment Area (8-hr)",
+			"description":"Performs required technical analysis to demonstrate conformity to Ozone requirements.",
+			"color": "#11bf11",
+			"dash": "3, 6",
+			"btn": "btn-success"
+		},
+		"MPO Area Actual":{
+			"name":"Metropolitan Planning Organization",
+			"description":"Responsible for carrying out the federally required metropolitan transportation planning process.",
+			"color": "#ff9a00",
+			"dash": 6,
+			"btn": "btn-warning"
+		},
+		"Particulate Matter":{
+			"name":"Particulate Matter Non-attainment Area",
+			"description":"Performs required technical analysis to demonstrate conformity to PM requirements.",
+			"color": "#f00000",
+			"dash": 0,
+			"btn": "btn-danger"
+		},
+	};
+	// <label class="btn btn-primary active">
+	//     <input type="checkbox" autocomplete="off" checked> Checkbox 1 (pre-checked)
+	//   </label>
+	L.mapbox.accessToken = 'pk.eyJ1IjoiYXRscmVnaW9uYWwiLCJhIjoiQmZ6d2tyMCJ9.oENm3NSf--qHrimdm9Vvdw';
+	var map = L.mapbox.map('map', 'atlregional.nlcec3mc', 
+	{
+		scrollWheelZoom: false,
+		maxBounds: [[34.93548199355903, -80.67260742187499], [32.61161640317033, -87.42370605468749]]
 	})
-	
-	
-});
+	    .setView([33.81908916394128, -84.04403686523438], 9);
 
-// Get COUNTIES
-$.getJSON('http://arc.garc.opendata.arcgis.com/datasets/53ca7db14b8f4a9193c1883247886459_67.geojson', function(data){
-	// coun = data;
-	$.each(data.features, function(i, feature){
-		console.log(feature);
-		if (typeof feature === 'undefined'){
-			console.log('county undefined');
-			// geojsonData.features.splice(i, 1);
-			data.features.splice(i, 1);
-		}
-		if (i === data.features.length - 1){
-			counties = L.geoJson(data, { 
-				style: {
-					opacity: 1,
-					color: 'black',
-					fillOpacity: 0,
-					weight: countyWeight,
-					dashArray: "5,2,3,7"
-				},
-		    	onEachFeature: onEachCounty
-		    }).addTo(map).bringToBack();
-		}
+	L.control.fullscreen().addTo(map);
+	var geojson;
+	var geojsonData;
+	var counties;
+	var slice;
+	var labels = [];
+	var defaultStrokeOpacity = 1;
+	var boundaryWeight = 0;
+	var countyWeight = 2;
+	var defaultFillOpacity = 0.5;
+
+	$.each(boundaryMap, function(key, value){
+		$('#boundarySelect').append('<label class="boundary-checkbox btn ' + 
+									value.btn + 
+									' active">' +
+									'<input class=" pull-left" type="checkbox" autocomplete="off" checked value="' + key + '"> ' + 
+									'<span class="pull-left" style="padding:0 0 0 4px"> ' + value.name + '</span>' + // ' <button class="btn btn-xs"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button>' +
+									'</label>'
+		);
+		$('#boundaryList').append('<li><strong>' + value.name + '</strong> - ' + value.description + '</li>' )
 	});
-	
-	
-});
-function style(feature){
-	return {
-        fillColor: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? boundaryMap[feature.properties.REGION].color : '#fff',
-        weight: boundaryWeight,
-        opacity: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? defaultStrokeOpacity : 0,
-        fillOpacity: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? defaultFillOpacity : 0,
-        color: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? boundaryMap[feature.properties.REGION].color : '#fff',
-        dashArray: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? boundaryMap[feature.properties.REGION].dash : 3,
-    };
-}
-function onEachFeature(feature, layer){
-	var popupContent = typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? '<h4>' + boundaryMap[feature.properties.REGION].name + '</h4><p>'  + boundaryMap[feature.properties.REGION].description + '</p>' : '' ;
-	if (typeof boundaryMap[feature.properties.REGION] !== 'undefined') {
-		layer.bindPopup(popupContent);
+	$('#boundarySelect').append('<label class="boundary-checkbox btn btn-default"><input class=" pull-left" type="checkbox" autocomplete="off" checked value="counties"><span class="pull-left" style="padding:0 0 0 4px"> Counties</span></label>')
+
+	$('label > input[type=checkbox]').on('change', function () {
+		// console.log();
+		var checked = $(this).is(':checked');
+		console.log(this.value);
+		// console.log(geojson.getLayers());
+		var layers = geojson.getLayers();
+		if (checked){
+			for (var i = 0; i < layers.length; i++) {
+				if (layers[i].feature.properties.REGION === this.value){
+					// layers[i].setStyle({opacity:defaultStrokeOpacity,fillOpacity:defaultFillOpacity});
+					map.addLayer(layers[i]);
+					orderLayers();
+				}
+
+			};
+		}
+		else {
+			for (var i = 0; i < layers.length; i++) {
+				if (layers[i].feature.properties.REGION === this.value){
+					// layers[i].setStyle({opacity:0,fillOpacity:0});
+					map.removeLayer(layers[i]);
+				}
+			};
+		}
+		if (this.value === 'counties'){
+			if (checked){
+				map.addLayer(counties);
+				counties.bringToBack();
+				for (var i = 0; i < labels.length; i++) {
+					map.addLayer(labels[i])
+				};
+			}
+			else{
+				map.removeLayer(counties);	
+				for (var i = 0; i < labels.length; i++) {
+					map.removeLayer(labels[i])
+				};
+			}
+		}
+
+	});
+
+	// Get Planning Areas
+	// geojson query only selects 4 needed planning areas.
+	$.getJSON("http://arc.garc.opendata.arcgis.com/datasets/00291eb4d3e34cb8bc642919a91a9e72_99.geojson?where=%20(REGION%20like%20'%25MPO%20Area%20Actual%25'%20OR%20REGION%20like%20'%258hr%25'%20OR%20REGION%20like%20'%25RDC%25'%20OR%20REGION%20like%20'%25Particulate%25')%20", function(data){
+		geojsonData = data;
+		console.log(data);
+		geojson = L.geoJson(data, { 
+			style: style,
+	    	onEachFeature: onEachFeature
+	    }).addTo(map);
+	    orderLayers();
+	});
+
+	// Get COUNTIES
+	$.getJSON('http://arc.garc.opendata.arcgis.com/datasets/53ca7db14b8f4a9193c1883247886459_67.geojson', function(data){
+		// coun = data;
+		$.each(data.features, function(i, feature){
+			// console.log(feature);
+			if (typeof feature === 'undefined'){
+				console.log('county undefined');
+				// geojsonData.features.splice(i, 1);
+				data.features.splice(i, 1);
+			}
+			if (i === data.features.length - 1){
+				counties = L.geoJson(data, { 
+					style: {
+						opacity: 1,
+						color: 'black',
+						fillOpacity: 0,
+						weight: countyWeight,
+						dashArray: "5,2,3,7"
+					},
+			    	onEachFeature: onEachCounty
+			    }).addTo(map).bringToBack();
+			}
+		});
+	});
+
+	function style(feature){
+		return {
+	        fillColor: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? boundaryMap[feature.properties.REGION].color : '#fff',
+	        weight: boundaryWeight,
+	        opacity: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? defaultStrokeOpacity : 0,
+	        fillOpacity: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? defaultFillOpacity : 0,
+	        color: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? boundaryMap[feature.properties.REGION].color : '#fff',
+	        dashArray: typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? boundaryMap[feature.properties.REGION].dash : 3,
+	    };
 	}
-}
-function orderLayers(){
-	var layers = geojson.getLayers();
-	layers[1].bringToFront();
-	layers[4].bringToFront();
-	layers[0].bringToFront();
-}
-function onEachCounty(feature, layer){
-	var xOffset = -feature.properties.NAME10.length * feature.properties.NAME10.length / 2
-	var label = new L.Label({
-		className:'county-label',
-		offset:[xOffset,-5]
-	})
-	label.setContent(feature.properties.NAME10)
-	label.setLatLng(layer.getBounds().getCenter())
-	labels.push(label);
-	map.showLabel(label);
+	function onEachFeature(feature, layer){
+		var popupContent = typeof boundaryMap[feature.properties.REGION] !== 'undefined' ? '<h4>' + boundaryMap[feature.properties.REGION].name + '</h4><p>'  + boundaryMap[feature.properties.REGION].description + '</p>' : '' ;
+		if (typeof boundaryMap[feature.properties.REGION] !== 'undefined') {
+			layer.bindPopup(popupContent);
+		}
+	}
+	function orderLayers(){
+		var layers = geojson.getLayers();
+		layers[1].bringToFront();
+		layers[3].bringToFront();
+		layers[0].bringToFront();
+	}
+	function onEachCounty(feature, layer){
+		var xOffset = -feature.properties.NAME10.length * feature.properties.NAME10.length / 2
+		var label = new L.Label({
+			className:'county-label',
+			offset:[xOffset,-5]
+		})
+		label.setContent(feature.properties.NAME10)
+		label.setLatLng(layer.getBounds().getCenter())
+		labels.push(label);
+		map.showLabel(label);
 
-}
+	}
 </script>
-
-
 </body>
 </html>
