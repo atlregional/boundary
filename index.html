@@ -201,7 +201,7 @@
 
 	// Get Planning Areas
 	// geojson query only selects 4 needed planning areas.
-	$.getJSON("http://opendata.atlantaregional.com/datasets/dd084d56fb994651b85699b9807e1f45_146.geojson?where=type%20like%20'%25BUS_LOCAL%25'&geometry={"xmin":-9780204.851586267,"ymin":3913045.0578392656,"xmax":-8997489.681946103,"ymax":4096493.92572368,"spatialReference":{"wkid":102100}}", function(data){
+	$.getJSON("http://arc.garc.opendata.arcgis.com/datasets/00291eb4d3e34cb8bc642919a91a9e72_99.geojson?where=%20(REGION%20like%20'%25MPO%20Area%20Actual%25'%20OR%20REGION%20like%20'%258hr%25'%20OR%20REGION%20like%20'%25RDC%25'%20OR%20REGION%20like%20'%25Particulate%25')%20", function(data){
 		geojsonData = data;
 		console.log(data);
 		geojson = L.geoJson(data, { 
