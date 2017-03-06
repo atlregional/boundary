@@ -200,7 +200,7 @@
 
 	// Get Planning Areas
 	// geojson query only selects 4 needed planning areas.
-	$.getJSON("http://arc.garc.opendata.arcgis.com/datasets/00291eb4d3e34cb8bc642919a91a9e72_99.geojson?where=%20(REGION%20like%20'%25MPO%20Area%20Actual%25'%20OR%20REGION%20like%20'%258hr%25'%20OR%20REGION%20like%20'%25RDC%25'%20OR%20REGION%20like%20'%25Particulate%25')%20", function(data){
+	$.getJSON("https://opendata.arcgis.com/datasets/00291eb4d3e34cb8bc642919a91a9e72_99.geojson", function(data){
 		geojsonData = data;
 		console.log(data);
 		geojson = L.geoJson(data, {
@@ -211,7 +211,7 @@
 	});
 
 	// Get COUNTIES
-	$.getJSON('http://arc.garc.opendata.arcgis.com/datasets/53ca7db14b8f4a9193c1883247886459_67.geojson', function(data){
+	$.getJSON('https://opendata.arcgis.com/datasets/53ca7db14b8f4a9193c1883247886459_67.geojson', function(data){
 		// coun = data;
 		$.each(data.features, function(i, feature){
 			// console.log(feature);
