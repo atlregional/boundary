@@ -4,8 +4,10 @@
 	<meta charset=utf-8 />
 	<title>ARC Planning Areas</title>
 	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-	<script src='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.js'></script>
-	<link href='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.css' rel='stylesheet' />
+	<script src='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.js'></script>
+	<link href='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.css' rel='stylesheet' />
+	<!-- <script src='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.js'></script>
+	<link href='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.css' rel='stylesheet' /> -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css"/>
 	<!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"> -->
 	<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.4/Leaflet.fullscreen.min.js'></script>
@@ -125,13 +127,19 @@
 	// <label class="btn btn-primary active">
 	//     <input type="checkbox" autocomplete="off" checked> Checkbox 1 (pre-checked)
 	//   </label>
-	L.mapbox.accessToken = 'pk.eyJ1IjoiYXRscmVnaW9uYWwiLCJhIjoiQmZ6d2tyMCJ9.oENm3NSf--qHrimdm9Vvdw';
-	var map = L.mapbox.map('map', 'atlregional.nlcec3mc',
-	{
-		scrollWheelZoom: false,
-		maxBounds: [[34.93548199355903, -80.67260742187499], [32.61161640317033, -87.42370605468749]]
-	})
-	    .setView([33.81908916394128, -84.04403686523438], 9);
+	L.mapbox.accessToken = 'pk.eyJ1IjoibGNhY2VkYSIsImEiOiIzNmM4MGRlN2I4NDhiY2UxZjA4MmJjZjE5OWEzYjUzNSJ9.Wc5KTJpWxmpxVMZfcuEQNg';
+	var map = L.mapbox.map('map')
+		.setView([33.81908916394128, -84.04403686523438], 9)
+		.addLayer(L.mapbox.styleLayer('mapbox://styles/lcaceda/ckhvg8oj907om19mojygoda2x'));
+
+	// L.mapbox.map('map',
+	// {
+	// 	scrollWheelZoom: false,
+	// 	maxBounds: [[34.93548199355903, -80.67260742187499], [32.61161640317033, -87.42370605468749]]
+	// })
+	    // .setView([33.81908916394128, -84.04403686523438], 9);
+
+
 
 	L.control.fullscreen().addTo(map);
 	var geojson;
