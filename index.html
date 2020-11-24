@@ -132,15 +132,6 @@
 		.setView([33.81908916394128, -84.04403686523438], 9)
 		.addLayer(L.mapbox.styleLayer('mapbox://styles/lcaceda/ckhvg8oj907om19mojygoda2x'));
 
-	// L.mapbox.map('map',
-	// {
-	// 	scrollWheelZoom: false,
-	// 	maxBounds: [[34.93548199355903, -80.67260742187499], [32.61161640317033, -87.42370605468749]]
-	// })
-	    // .setView([33.81908916394128, -84.04403686523438], 9);
-
-
-
 	L.control.fullscreen().addTo(map);
 	var geojson;
 	var geojsonData;
@@ -236,9 +227,9 @@
 						fillOpacity: 0,
 						weight: countyWeight,
 						dashArray: "5,2,3,7"
-					},
-			    	onEachFeature: onEachCounty
-			    }).addTo(map).bringToBack();
+					}
+			    	// onEachFeature: onEachCounty
+			    }).addTo(map)
 			}
 		});
 	});
